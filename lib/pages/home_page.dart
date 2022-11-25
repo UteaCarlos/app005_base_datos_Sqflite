@@ -17,10 +17,22 @@ class HomePage extends StatelessWidget {
         future: DBAdmin.db.getTasks(),
         builder: (BuildContext context, AsyncSnapshot snap){
           if (snap.hasData){
-            List
+            List<Map<String, dynamic>> myTasks = snap.data;
+            return ListView.builder(
+              itemCount: myTasks.length,
+              itemBuilder: (BuildContext context,int index){
+              return ListTile(
+                title:Text(myTasks[index]["Nombre"]),
+                subtitle:Text(myTasks[index]["Apellidos"]),
+                trailing:Text(myTasks[index]["Direccion"]),
+
+              );
+              },
+            );
           }
-          print(snap.data);
-          return Text("Hola");
+        return const Center(
+         child: CircularProgressIndicator(),
+        );
         },
         //child: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
