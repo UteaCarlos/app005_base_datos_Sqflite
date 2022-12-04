@@ -22,7 +22,7 @@ class DBAdmin {
 
   Future<Database> initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = join(directory.path, "Cliente.db");
+    String path = join(directory.path, "Cliente_BD.db");
     return await openDatabase(
       path,
       version: 1,
@@ -36,44 +36,46 @@ class DBAdmin {
   }
 
   // INSERTAR DATOS A LA TABLA CLIENTE inserRawtTask
-  inserRawtTask() async {
+  Future<int> insertRawTask(TaskModel model) async {
     Database? db = await chekDatabase();
     int res = await db!.rawInsert(
-        "INSERT INTO Cliente(Nombre, Apellidos, Direccion,Telefono,Correo)VALUES ('Carlos','Huanca','Av. Pardo','984709285','202000203c@utea.edu.pe')");
-    print(res);
+        "INSERT INTO Cliente(Nombre, Apellidos, Direccion,Telefono,Correo)VALUES ('${model.Nombre}','${model.Apellidos}','${model.Direccion}')");
+    return res;
   }
 
   // INSERTAR DATOS A LA TABLA CLIENTE insertTask
 
-  insertTask() async {
+  Future<int> insertTask(TaskModel model) async {
     Database? db = await chekDatabase();
     int res = await db!.insert(
       "Cliente",
       {
-        "Nombre": "Elizabeth",
-        "Apellidos": "Rojas",
-        "Direccion": "Av. La Cultura",
-        "Telefono": "984752685",
-        "Correo": "rojas@gmail.com",
+        "Nombre": model.Nombre,
+        "Apellidos": model.Apellidos,
+        "Direccion": model.Direccion,
       },
     );
-    print(res);
+    return res;
   }
 
   getRawTasks() async {
     Database? db = await chekDatabase();
     List tasks = await db!.rawQuery("SELECT * FROM Cliente");
-    print(tasks[0]);
+    print(tasks);
   }
 
   Future<List<TaskModel>> getTasks() async {
     Database? db = await chekDatabase();
     List<Map<String, dynamic>> tasks = await db!.query("Cliente");
-    List<TaskModel> taskModelList = [];
+    List<TaskModel> taskModelList =
+        tasks.map((e) => TaskModel.deMapAModel(e)).toList();
 
-tasks.forEach((element) {
-  print(element);
-});
+// tasks.forEach((element) {
+//   TaskModel task = TaskModel.deMapAModel(element);
+//   taskModelList.add(task);
+// });
+    // print(taskModelList);
+
     return taskModelList;
   }
 
@@ -84,32 +86,34 @@ tasks.forEach((element) {
         "UPDATE Cliente SET Nombre = 'Jorge', Apellidos = 'Ramos', Direccion = 'Av. Sol', Telefono = '123456789', Correo = 'Jorge@gmail.com' WHERE id =2");
     print(res);
   }
+
 //PARA ACTUALIZAR DATOS MAS DIRECTOS
   updateTask() async {
     Database? db = await chekDatabase();
     int res = await db!.update(
-      "Cliente",
-      {
-       "Nombre":"Juan Carlos",
-        "Apellidos":"Flores",
-        "Direccion":"Wanchaq",
-        "Telefono":"987456321",
-        "Correo":"juancarlos@gmail.com",
-      },
-      where: "id = 2"
-    );
+        "Cliente",
+        {
+          "Nombre": "Juan Carlos",
+          "Apellidos": "Flores",
+          "Direccion": "Wanchaq",
+          "Telefono": "987456321",
+          "Correo": "juancarlos@gmail.com",
+        },
+        where: "id = 2");
   }
+
 //PARA ELIMINAR UN REGISTRO
-    deleteRawTask() async {
-      Database? db = await chekDatabase();
-      int res = await db!.rawDelete("DELETE FROM Cliente WHERE id = 2");
-      print(res);
-
-  }
-
-  deleteTask() async {
+  deleteRawTask() async {
     Database? db = await chekDatabase();
-   int res = await db!.delete("Cliente",where: "id = 11" );
-   print(res);
+    int res = await db!.rawDelete("DELETE FROM Cliente WHERE id = 2");
+    print(res);
   }
+
+  Future<int> deleteTask(int id) async {
+    Database? db = await chekDatabase();
+    int res = await db!.delete("Cliente", where: "id = $id");
+    return res;
+  }
+
+  deleteTASK(int taskId) {}
 }
