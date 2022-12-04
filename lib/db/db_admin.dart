@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app05_basedatos/models/task_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -65,10 +66,15 @@ class DBAdmin {
     print(tasks[0]);
   }
 
-  Future<List<Map<String, dynamic>>> getTasks() async {
+  Future<List<TaskModel>> getTasks() async {
     Database? db = await chekDatabase();
     List<Map<String, dynamic>> tasks = await db!.query("Cliente");
-    return tasks;
+    List<TaskModel> taskModelList = [];
+
+tasks.forEach((element) {
+  print(element);
+});
+    return taskModelList;
   }
 
   //PARA ACTUALIZAR DATOS
