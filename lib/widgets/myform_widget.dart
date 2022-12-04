@@ -96,7 +96,7 @@ class _MyFormWidgetState extends State<MyFormWidget> {
             TextFormField(
               controller: _DireccionController,
               maxLines: 2,
-              decoration: InputDecoration(hintText: "correo"),
+              decoration: InputDecoration(hintText: "Direccion"),
               validator: (String? value) {
                 if (value!.isEmpty) {
                   return "el campo es obligatorio";
